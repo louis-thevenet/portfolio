@@ -1,0 +1,78 @@
+---
+import { getContent, type Locale } from "../data/content";
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+const { education, ui } = getContent(lang);
+---
+
+<section id="education" class="section-alt">
+  <div class="wrap">
+    <p class="eyebrow">{ui.education.eyebrow}</p>
+    <h2 class="section-title">{ui.education.title}</h2>
+    <p class="section-lead">{ui.education.lead}</p>
+
+    <div class="edu-list">
+      {education.map((e) => (
+        <div class="edu-row">
+          <div class="edu-when mono">{e.period}</div>
+          <div>
+            <h3>{e.title}</h3>
+            <p class="edu-org mono">{e.org} · {e.location}</p>
+            <p class="edu-detail">{e.detail}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .edu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  .edu-row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 18px;
+  }
+
+  .edu-when {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-faint);
+    padding-top: 3px;
+  }
+
+  .edu-row h3 {
+    margin: 0 0 4px;
+    font-size: 16.5px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .edu-org {
+    margin: 0 0 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .edu-detail {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+
+  @media (max-width: 600px) {
+    .edu-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+</style>

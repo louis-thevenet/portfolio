@@ -1,0 +1,105 @@
+---
+import ProjectCard from "./ProjectCard.astro";
+import { getContent, type Locale } from "../data/content";
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+const { projects, ui } = getContent(lang);
+---
+
+<section id="projects" class="section-alt">
+  <div class="wrap">
+    <p class="eyebrow">{ui.projects.eyebrow}</p>
+    <h2 class="section-title">{ui.projects.title}</h2>
+    <p class="section-lead">{ui.projects.lead}</p>
+
+    <div
+      class="grid"
+      data-updated={ui.projects.updated}
+      data-unavailable={ui.projects.unavailable}
+      data-date-locale={ui.projects.dateLocale}
+    >
+      {projects.map((p) => (
+        <ProjectCard
+          repo={p.repo}
+          tags={p.tags}
+          fallback={p.fallback}
+          media={p.media}
+          loading={ui.projects.loading}
+          viewRepo={ui.projects.viewRepo}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Hydrate every .card with live data from the public GitHub API.
+  // Falls back to the static copy already rendered if the request fails
+  // or the rate limit is hit — the page never shows a broken state.
+  async function hydrateCards() {
+    const grid = document.querySelector<HTMLElement>("#projects .grid");
+    const updatedLabel = grid?.dataset.updated ?? "updated";
+    const unavailableLabel =
+      grid?.dataset.unavailable ?? "live stats unavailable — see repo";
+    const dateLocale = grid?.dataset.dateLocale || undefined;
+    const cards = document.querySelectorAll<HTMLElement>(".card[data-repo]");
+
+    await Promise.all(
+      Array.from(cards).map(async (card) => {
+        const repo = card.dataset.repo;
+        const statsEl = card.querySelector<HTMLElement>('[data-field="stats"]');
+        const descEl = card.querySelector<HTMLElement>('[data-field="description"]');
+        const langEl = card.querySelector<HTMLElement>('[data-field="language"]');
+
+        try {
+          const res = await fetch(`https://api.github.com/repos/${repo}`, {
+            headers: { Accept: "application/vnd.github+json" },
+          });
+          if (!res.ok) throw new Error(`status ${res.status}`);
+          const data = await res.json();
+
+          if (descEl && data.description) descEl.textContent = data.description;
+          if (langEl && data.language) {
+            langEl.textContent = data.language;
+            langEl.hidden = false;
+          }
+          if (statsEl) {
+            const updated = new Date(data.pushed_at);
+            const updatedStr = updated.toLocaleDateString(dateLocale, {
+              year: "numeric",
+              month: "short",
+            });
+            statsEl.innerHTML = `
+              <span>★ ${data.stargazers_count}</span>
+              <span>⑂ ${data.forks_count}</span>
+              <span>${updatedLabel} ${updatedStr}</span>
+            `;
+          }
+        } catch (err) {
+          if (statsEl) {
+            statsEl.innerHTML = `<span>${unavailableLabel}</span>`;
+          }
+        }
+      })
+    );
+  }
+
+  hydrateCards();
+</script>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  @media (max-width: 700px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

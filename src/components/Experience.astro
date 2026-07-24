@@ -1,0 +1,101 @@
+---
+import { getContent, type Locale } from "../data/content";
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+const { experience, ui } = getContent(lang);
+---
+
+<section id="experience">
+  <div class="wrap">
+    <p class="eyebrow">{ui.experience.eyebrow}</p>
+    <h2 class="section-title">{ui.experience.title}</h2>
+    <p class="section-lead">{ui.experience.lead}</p>
+
+    <ol class="timeline">
+      {experience.map((job) => (
+        <li class="entry">
+          <div class="entry-when mono">{job.period}</div>
+          <div class="entry-body">
+            <h3>{job.title}</h3>
+            <p class="entry-org mono">{job.org} · {job.location}</p>
+            {job.points.length > 0 && (
+              <ul>
+                {job.points.map((pt) => <li>{pt}</li>)}
+              </ul>
+            )}
+            {job.stack.length > 0 && (
+              <div class="tags">
+                {job.stack.map((s) => <span class="tag">{s}</span>)}
+              </div>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--border);
+  }
+
+  .entry {
+    position: relative;
+    padding: 0 0 40px 28px;
+  }
+
+  .entry:last-child {
+    padding-bottom: 0;
+  }
+
+  .entry::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .entry-when {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+  }
+
+  .entry-body h3 {
+    margin: 0 0 4px;
+    font-size: 17.5px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .entry-org {
+    margin: 0 0 12px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .entry-body ul {
+    margin: 0 0 12px;
+    padding-left: 18px;
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+
+  .entry-body li {
+    margin-bottom: 4px;
+  }
+</style>

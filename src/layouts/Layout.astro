@@ -1,23 +1,42 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import "../styles/global.css";
+import { getContent, type Locale } from "../data/content";
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: Locale;
+}
+
+const { lang = "fr" } = Astro.props;
+const { profile } = getContent(lang);
+const {
+  title = `${profile.name} — ${profile.role}`,
+  description = profile.tagline,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%231f5fa8%22/><text x=%2250%22 y=%2270%22 font-family=%22Inter,sans-serif%22 font-weight=%22700%22 font-size=%2252%22 fill=%22%23ffffff%22 text-anchor=%22middle%22>LT</text></svg>" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <script is:inline>
+      // Set the theme before first paint to avoid a flash.
+      const stored = localStorage.getItem("theme");
+      const theme =
+        stored ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light");
+      document.documentElement.dataset.theme = theme;
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

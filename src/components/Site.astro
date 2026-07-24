@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "./Nav.astro";
+import Hero from "./Hero.astro";
+import Experience from "./Experience.astro";
+import Projects from "./Projects.astro";
+import Contributions from "./Contributions.astro";
+import Education from "./Education.astro";
+import SkillsFooter from "./SkillsFooter.astro";
+import type { Locale } from "../data/content";
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+---
+
+<Layout lang={lang}>
+  <Nav lang={lang} />
+  <Hero lang={lang} />
+  <Experience lang={lang} />
+  <Projects lang={lang} />
+  <Contributions lang={lang} />
+  <Education lang={lang} />
+  <SkillsFooter lang={lang} />
+</Layout>
