@@ -8,71 +8,95 @@ const { lang } = Astro.props;
 const { education, ui } = getContent(lang);
 ---
 
-<section id="education" class="section-alt">
+<section id="education">
   <div class="wrap">
     <p class="eyebrow">{ui.education.eyebrow}</p>
     <h2 class="section-title">{ui.education.title}</h2>
     <p class="section-lead">{ui.education.lead}</p>
 
-    <div class="edu-list">
+    <ol class="timeline">
       {education.map((e) => (
-        <div class="edu-row">
-          <div class="edu-when mono">{e.period}</div>
-          <div>
+        <li class="entry">
+          <div class="entry-when mono">{e.period}</div>
+          <div class="entry-body">
             <h3>{e.title}</h3>
-            <p class="edu-org mono">{e.org} · {e.location}</p>
-            <p class="edu-detail">{e.detail}</p>
+            <p class="entry-org mono">{e.org} · {e.location}</p>
+              <div class="tags">
+              {e.detail.map((item) => (
+                <span class="tag">{item}</span>
+              ))}
+            </div>
           </div>
-        </div>
+        </li>
       ))}
-    </div>
+    </ol>
   </div>
 </section>
 
 <style>
-  .edu-list {
-    display: flex;
-    flex-direction: column;
-    gap: 26px;
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--border);
   }
 
-  .edu-row {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 18px;
+  .entry {
+    position: relative;
+    padding: 0 0 40px 28px;
   }
 
-  .edu-when {
+  .entry:last-child {
+    padding-bottom: 0;
+  }
+
+  .entry::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .entry-when {
     font-size: 12.5px;
     font-weight: 500;
     color: var(--text-faint);
-    padding-top: 3px;
+    margin-bottom: 6px;
   }
 
-  .edu-row h3 {
+  .entry-body h3 {
     margin: 0 0 4px;
-    font-size: 16.5px;
+    font-size: 17.5px;
     font-weight: 600;
     color: var(--navy);
   }
 
-  .edu-org {
-    margin: 0 0 8px;
+  .entry-org {
+    margin: 0 0 12px;
     font-size: 13.5px;
     font-weight: 500;
     color: var(--accent);
   }
 
-  .edu-detail {
-    margin: 0;
+  .edu-details {
+    margin: 0 0 12px;
+    padding-left: 18px;
     color: var(--text-muted);
     font-size: 15px;
   }
+  .edu-details .tag {
+    margin-right: 6px;
+    margin-bottom: 6px;
+  }
 
   @media (max-width: 600px) {
-    .edu-row {
-      grid-template-columns: 1fr;
-      gap: 4px;
+    .entry {
+      padding-left: 22px;
     }
   }
 </style>

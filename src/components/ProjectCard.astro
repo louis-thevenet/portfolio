@@ -4,7 +4,7 @@ interface Props {
   repo?: string; // "owner/name" — omit for off-GitHub projects
   link?: string; // optional external link, used when there's no repo
   tags: string[];
-  fallback: string;
+  description: string;
   highlights: string[]; // hand-written bullet points (see content.ts)
   loading: string;
   viewRepo: string;
@@ -19,7 +19,7 @@ const {
   repo,
   link,
   tags,
-  fallback,
+  description,
   highlights,
   loading,
   viewRepo,
@@ -38,7 +38,6 @@ const isVideo = !!media && /\.(mp4|webm)$/i.test(media);
   class:list={["card", { full: fullWidth }]}
   id={cardId}
   data-repo={repo}
-  data-fallback={fallback}
 >
   {/*
     PROJECT DEMO (video / GIF).
@@ -73,7 +72,7 @@ const isVideo = !!media && /\.(mp4|webm)$/i.test(media);
       <span class="lang" data-field="language" hidden></span>
     </div>
 
-    <p class="desc" data-field="description">{fallback}</p>
+    <p class="desc" data-field="description">{description}</p>
 
     {highlights.length > 0 && (
       <ul class="highlights">

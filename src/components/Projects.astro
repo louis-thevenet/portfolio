@@ -27,7 +27,7 @@ const { projects, ui } = getContent(lang);
           repo={p.repo}
           link={p.link}
           tags={p.tags}
-          fallback={p.fallback}
+          description={p.description}
           highlights={p.highlights}
           media={p.media}
           status={p.status}
@@ -74,7 +74,6 @@ const { projects, ui } = getContent(lang);
       Array.from(cards).map(async (card) => {
         const repo = card.dataset.repo;
         const statsEl = card.querySelector<HTMLElement>('[data-field="stats"]');
-        const descEl = card.querySelector<HTMLElement>('[data-field="description"]');
         const langEl = card.querySelector<HTMLElement>('[data-field="language"]');
 
         try {
@@ -84,7 +83,6 @@ const { projects, ui } = getContent(lang);
           if (!res.ok) throw new Error(`status ${res.status}`);
           const data = await res.json();
 
-          if (descEl && data.description) descEl.textContent = data.description;
           if (langEl && data.language) {
             langEl.textContent = data.language;
             langEl.hidden = false;

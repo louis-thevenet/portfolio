@@ -4,6 +4,29 @@
 export const locales = ["en", "fr"] as const;
 export type Locale = (typeof locales)[number];
 
+type ExperienceLink = {
+    label: string;
+    url: string;
+};
+
+type ExperienceItem = {
+    title: string;
+    org: string;
+    location: string;
+    period: string;
+    stack: string[];
+    points: string[];
+    links?: ExperienceLink[];
+};
+
+type EducationItem = {
+    title: string;
+    org: string;
+    location: string;
+    period: string;
+    detail: string[];
+};
+
 // Non-translatable constants.
 //
 // `emailEnc` / `phoneEnc` are the contact details stored base64-encoded and
@@ -132,7 +155,7 @@ const data = {
                     "Resolved technical and logistical issues, guided candidates to their exam rooms, and managed equipment",
                 ],
             },
-        ],
+        ] satisfies ExperienceItem[],
 
         education: [
             {
@@ -140,26 +163,40 @@ const data = {
                 org: "École de Technologie Supérieure (ÉTS)",
                 location: "Montréal, Canada",
                 period: "Sept 2025 — Jan 2026",
-                detail:
-                    "Software architecture, software & systems security, parallel computing architectures, VR/AR",
+                detail: [
+                    "Software architecture",
+                    "Software & systems security",
+                    "Parallel computing architectures",
+                    "VR/AR",
+                ],
             },
             {
                 title: "Engineering degree, Computer Science & Telecommunications",
                 org: "ENSEEIHT",
                 location: "Toulouse, France",
                 period: "2023 — present",
-                detail:
-                    "Applied mathematics, operations research, concurrent systems, software & systems engineering, distributed systems, big data",
+                detail: [
+                    "Applied mathematics",
+                    "Operations research",
+                    "Concurrent systems",
+                    "Software & systems engineering",
+                    "Distributed systems",
+                    "Big data",
+                ],
             },
             {
                 title: "Classe préparatoire (MPI / MP2I)",
                 org: "Lycée Paul Valéry",
                 location: "Paris, France",
                 period: "Sept 2021 — Jul 2023",
-                detail:
-                    "Intensive math, physics & computer science track preparing for the Grandes Écoles entrance exams",
+                detail: [
+                    "Intensive math",
+                    "Physics",
+                    "Computer science",
+                    "Preparation for the Grandes Écoles entrance exams",
+                ],
             },
-        ],
+        ] satisfies EducationItem[],
 
         contributions: [
             {
@@ -185,7 +222,7 @@ const data = {
             interests: ["Open source", "Climbing & hiking", "Reading"],
         },
 
-        projectFallbacks: {
+        projectDescriptions: {
             "absent-light":
                 "A survival roguelike set in a collapsed high-fantasy world. Scavenge, craft and endure in a deep, systemic simulation where the world reacts to you and every run is unforgiving.",
             "louis-thevenet/vault-tasks":
@@ -303,135 +340,166 @@ const data = {
         tagline:
             "Étudiant ingénieur en fin de cursus à l'ENSEEIHT, à la recherche d'un poste en CDI à partir de septembre 2026.",
         heroSecondary:
-            "Actuellement stagiaire ingénieur logiciel chez Thales, où je développe un simulateur d'essaims de drones sur Unreal Engine 5, et mainteneur du projet open source Nixpkgs.",
+            "Actuellement stagiaire ingénieur logiciel chez Thales, où je développe un simulateur d'essaims de drones sur Unreal Engine 5.\nJe suis également actif dans la communauté open source sur des projets personnels et communautaires.",
         availability: "Disponible en CDI · sept. 2026",
 
         experience: [
             {
                 title:
-                    "Stagiaire ingénieur logiciel — Simulateur d'essaims de drones, Unreal Engine",
+                    "Stagiaire ingénieur logiciel - Simulateur d'essaims de drones, Unreal Engine",
                 org: "Thales",
                 location: "Élancourt, France",
                 period: "févr. 2026 — août 2026",
                 stack: ["Unreal Engine 5", "C++", "CUDA"],
                 points: [
-                    "Développement du simulateur sur Unreal Engine 5 en C++",
-                    "Simulation des caméras embarquées avec encodage GPU et diffusion du flux",
-                    "Intégration de plusieurs moteurs physiques (Gazebo, JSBSim) et piles de vol (PX4, SwarmMaster)",
-                    "Répartition de la charge de simulation sur plusieurs machines",
+                    "Développement du simulateur sur Unreal Engine 5 en C++ au sein de l'équipe Essaims de Drones",
+                    "Simulation des caméras embarquées avec encodage GPU et diffusion du flux en direct",
+                    "Simulateur agnostique du moteur physique qui permet de simuler toutes sortes de véhicules",
+                    "Environnement 3D photoréaliste",
+                    "Intégration de plusieurs moteurs physiques (Gazebo pour SwarmMaster, JSBSim pour Toutatis) avec synchronisation du terrain et des collisions",
+                    "Répartition de la charge de rendu des streams sur plusieurs machines",
                 ],
             },
             {
-                title: "Stagiaire ingénieur logiciel — Nix dans la stack SlapOS",
+                title: "Stagiaire ingénieur logiciel - Nix dans la stack SlapOS",
                 org: "Nexedi",
                 location: "Lille, France",
                 period: "juin 2025 — août 2025",
-                stack: ["Nix", "NixOS", "Buildout", "SlapOS", "Python"],
+                stack: ["Nix", "NixOS", "Buildout", "SlapOS", "Python", "glibc"],
                 points: [
                     "Intégration du gestionnaire de paquets Nix dans le système de déploiement SlapOS, en remplacement d'Ansible pour renforcer la reproductibilité",
                     "Adaptation de la stack logicielle SlapOS pour une compatibilité complète avec NixOS",
+                    "Rédaction d'articles mettant en évidence que Nix et Docker ne permettent pas de produire des binaires réellement portables, la glibc étant figée dans l'image/le store et divergente de celle du système hôte",
+                    "Patch de nixpkgs pour supporter d'anciennes versions de glibc/kernel, comme piste pour restaurer une véritable portabilité des binaires Nix",
+                ],
+                links: [
+                    { label: "Glibc Incompatibility in Nix Builds", url: "https://blog.rapid.space/rapidspace-Blog/rapidspace-Glibc.Incompatibility.In.Nix.Builds" },
+                    { label: "Glibc Incompatibility With Docker", url: "https://blog.rapid.space/rapidspace-Blog/rapidspace-Glibc.Incompatibility.With.Docker" },
                 ],
             },
             {
-                title: "Support informatique — Oraux des concours des écoles d'ingénieurs",
+                title: "Support informatique - Oraux des concours des écoles d'ingénieurs",
                 org: "Service concours écoles d'ingénieurs",
                 location: "Toulouse, France",
                 period: "Été 2024",
                 stack: [],
                 points: [
-                    "Résolution des problèmes techniques et logistiques, orientation des candidats vers leurs salles et gestion du matériel",
+                    "Gestion du matériel informatique utilisé par les jurys et les candidats lors des épreuves orales",
+                    "Assistance technique et logistique, orientation des candidats vers leurs salles et gestion du matériel",
                 ],
             },
-        ],
+        ] satisfies ExperienceItem[],
 
         education: [
             {
                 title: "Semestre d'échange",
                 org: "École de Technologie Supérieure (ÉTS)",
                 location: "Montréal, Canada",
-                period: "sept. 2025 — janv. 2026",
-                detail:
-                    "Architecture logicielle, sécurité des logiciels et des systèmes, architectures de calcul parallèle, VR/AR",
+                period: "sept. 2025 - janv. 2026",
+                detail: [
+                    "Architecture logicielle",
+                    "Sécurité des logiciels et des systèmes",
+                    "Architectures de calcul parallèle",
+                    "VR/AR",
+                ],
             },
             {
                 title: "Diplôme d'ingénieur, Informatique & Télécommunications",
                 org: "ENSEEIHT",
                 location: "Toulouse, France",
-                period: "2023 — aujourd'hui",
-                detail:
-                    "Mathématiques appliquées, recherche opérationnelle, systèmes concurrents, génie logiciel et systèmes, systèmes distribués, big data",
+                period: "2023 - aujourd'hui",
+                detail: [
+                    "Mathématiques appliquées",
+                    "Recherche opérationnelle",
+                    "Systèmes concurrents",
+                    "Génie logiciel et systèmes",
+                    "Systèmes distribués",
+                    "Big data",
+                ],
             },
             {
-                title: "Classe préparatoire (MPI / MP2I)",
+                title: "Classe préparatoire (MPI* / MP2I)",
                 org: "Lycée Paul Valéry",
                 location: "Paris, France",
-                period: "sept. 2021 — juil. 2023",
-                detail:
-                    "Filière intensive mathématiques, physique et informatique préparant aux concours des Grandes Écoles",
+                period: "sept. 2021 - juil. 2023",
+                detail: [
+                    "Mathématiques",
+                    "Physique",
+                    "Informatique",
+                ],
             },
-        ],
+        ] satisfies EducationItem[],
 
         contributions: [
             {
                 repo: "NixOS/nixpkgs",
-                role: "Mainteneur",
-                period: "2024 — aujourd'hui",
+                period: "2024 - aujourd'hui",
                 description:
-                    "Membre de l'équipe des mainteneurs de Nixpkgs : maintenance de plusieurs paquets et revue des contributions.",
+                    "Membre de l'équipe des mainteneurs de Nixpkgs : maintenance de plusieurs paquets.",
             },
             {
-                repo: "danth/stylix",
-                role: "Contributeur",
-                period: "en cours",
+                repo: "nix-community/stylix",
+                period: "2025 - aujourd'hui",
                 description:
-                    "Contributions à Stylix, le framework de thématisation système pour NixOS.",
+                    "Egalement membre de l'équipe dédiée aux mainteneurs de modules Stylix, le framework de theming système pour NixOS.",
             },
+            {
+                repo: "alexpasmantier/television",
+                description:
+                    "Contributions à Television, un \"fuzzy finder\" très versatile pour le faire mieux fonctionner avec Nix.",
+            },
+            {
+                repo: "ratatui/tui-widgets",
+                description:
+                    "Correction de bugs dans TUI Widgets, une bibliothèque de widgets pour créer des interfaces TUI (Text-based User Interfaces).",
+            },
+
         ],
 
         skills: {
             languages: ["Rust", "C++", "Java", "Python", "C#"],
-            tools: ["Unreal Engine", "MATLAB", "Git", "SQL", "Linux", "Nix / NixOS"],
-            spoken: ["Français — langue maternelle", "Anglais — C2"],
+            tools: ["Git", "Linux", "Nix / NixOS", "Unreal Engine", "MATLAB", "SQL", "CUDA"],
+            spoken: ["Français - langue maternelle", "Anglais - C2"],
             interests: ["Open source", "Escalade & randonnée", "Lecture"],
         },
 
-        projectFallbacks: {
+        projectDescriptions: {
             "absent-light":
-                "Un roguelike de survie dans un monde d'heroic-fantasy effondré. Récupérez, fabriquez et survivez dans une simulation systémique où le monde réagit à vos actions et où chaque partie est impitoyable.",
+                "Absent Light est un jeu de survie au tour-par-tour dans un univers fantasy. Luttez pour survivre dans un monde impitoyable, persistent et généré procéduralement, où chaque partie est unique et où le monde réagit à vos actions. Le jeu est en phase initiale de développement et n'est pas encore disponible au public.",
             "louis-thevenet/vault-tasks":
-                "Un gestionnaire de tâches en terminal qui lit et écrit les tâches directement dans des vaults Markdown — pensé pour ceux qui gardent leur second cerveau en texte brut.",
+                "Gestionnaire de tâches dans le terminal qui s'appuie sur des fichiers Markdown pour lire et écrire les tâches. Conçu pour s'intégrer parfaitement avec des logiciels de prise de notes et \"second brains\".",
             "louis-thevenet/map-generation":
-                "Expérimentations de génération procédurale de cartes.",
+                "Expérimentations de génération procédurale de terrain et de villes.",
             "louis-thevenet/Solarust":
-                "Une simulation du système solaire écrite en Rust.",
+                "Simulation d'interactions gravitationnelles entre corps célestes, réalisée en Rust.",
             "louis-thevenet/RayTracerCsharp":
-                "Un moteur de rendu par lancer de rayons pour afficher des objets 3D, conçu pour expérimenter les effets de lumière.",
+                "Moteur de rendu par Ray Tracing pour afficher des objets et scènes 3D.",
         } as Record<string, string>,
 
         projectHighlights: {
             "absent-light": [
-                "Survie en monde ouvert dans un univers fantasy en ruine généré procéduralement",
-                "Systèmes d'artisanat et d'inventaire poussés — fabriquer, réparer et improviser avec ce que l'on récupère",
-                "Jeu émergent et systémique où créatures, météo et magie interagissent sans être scriptés",
+                "Survie en monde ouvert dans un univers fantasy généré procéduralement",
+                "Systèmes d'artisanat et d'inventaire poussés : fabriquer, réparer et improviser avec ce que l'on récupère",
+                "Jeu émergent et systémique où créatures, environnement et magie interagissent sans être scriptés",
+                "Interface simple pour faciliter l'ajout de contenu et la profondeur de la simulation",
             ],
             "louis-thevenet/vault-tasks": [
-                "Analyse les tâches de n'importe quel fichier ou vault Markdown : sous-tâches, tags, dates relatives, priorité et progression",
-                "Naviguer, rechercher, filtrer et modifier les tâches — ou les ouvrir dans son propre éditeur",
-                "Vue calendrier et onglet de gestion du temps (Pomodoro & Flowtime)",
+                "Extension du langage Markdown avec une syntaxe de tâches avec méta-données (sous-tâches, tags, dates relatives, priorité et progression)",
+                "Toutes les données sont stockées dans les tâches, pour une portabilité maximale et une intégration avec n'importe quel logiciel de prise de notes",
+                "Interface en terminal pour naviguer, rechercher, filtrer et modifier les tâches",
             ],
             "louis-thevenet/map-generation": [
                 "Génération procédurale de biomes pilotée par des cartes de température, d'humidité, de continentalité et d'érosion",
-                "Explorer un monde infini dans une TUI, avec des chunks générés au fil des déplacements",
-                "Partie d'une expérience plus large : des PNJ pilotés par des LLM dans un monde procédural",
+                "Explorer un monde infini avec des chunks générés au fil des déplacements",
+                "Base de mes travaux de génération procédurale pour un projet plus ambitieux : Absent Light",
             ],
             "louis-thevenet/Solarust": [
                 "Simulation du système solaire réalisée avec le moteur de jeu Bevy en Rust",
                 "Un projet d'apprentissage pour explorer l'architecture ECS de Bevy et le rendu temps réel",
             ],
             "louis-thevenet/RayTracerCsharp": [
-                "Moteur de lancer de rayons écrit de zéro en C#",
-                "Charge des maillages 3D depuis des fichiers STL ASCII et les rend avec lumières et matériaux configurables",
-                "Éclairage de type Phong avec composantes ambiante, diffuse et spéculaire",
+                "Moteur écrit de 0 en C#",
+                "Charge des modèles 3D depuis des fichiers STL ASCII et en fait le rendu avec lumières et matériaux configurables",
             ],
         } as Record<string, string[]>,
 
@@ -504,7 +572,7 @@ const data = {
                 location: "Localisation",
                 emailMe: "M'écrire",
             },
-            footer: { builtWith: "Réalisé avec Astro" },
+            footer: {},
         },
     },
 };
@@ -529,7 +597,7 @@ export function getContent(lang: Locale) {
             // GitHub projects derive their name from the repo; off-GitHub ones
             // set `name` explicitly.
             name: p.name ?? p.repo!.split("/")[1],
-            fallback: d.projectFallbacks[p.id],
+            description: d.projectDescriptions[p.id],
             highlights: d.projectHighlights[p.id] ?? [],
             // Static status line for off-GitHub projects (undefined otherwise,
             // in which case the card fetches live GitHub stats instead).

@@ -31,6 +31,17 @@ const { experience, ui } = getContent(lang);
                 {job.stack.map((s) => <span class="tag">{s}</span>)}
               </div>
             )}
+            {job.links?.length > 0 && (
+              <ul class="links-list">
+                {job.links.map((link) => (
+                  <li>
+                    <a href={link.url} target="_blank" rel="noreferrer">
+                      {link.label} ↗
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </li>
       ))}
@@ -97,5 +108,20 @@ const { experience, ui } = getContent(lang);
 
   .entry-body li {
     margin-bottom: 4px;
+  }
+
+  .links-list {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+
+  .links-list li {
+    margin-bottom: 4px;
+  }
+
+  .links-list a {
+    color: inherit;
   }
 </style>
