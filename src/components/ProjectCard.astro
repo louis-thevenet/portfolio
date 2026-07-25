@@ -1,54 +1,121 @@
 ---
 interface Props {
-  repo: string; // "owner/name"
+  name: string; // display title (derived from repo for GitHub projects)
+  repo?: string; // "owner/name" — omit for off-GitHub projects
+  link?: string; // optional external link, used when there's no repo
   tags: string[];
   fallback: string;
+  highlights: string[]; // hand-written bullet points (see content.ts)
   loading: string;
   viewRepo: string;
+  visit: string; // label for the external link on non-repo projects
+  enlarge: string; // label for the "click to enlarge" affordance
   media?: string; // optional demo clip/GIF — see content.ts projectsBase
+  status?: string; // static status line shown in place of live GitHub stats
+  fullWidth?: boolean; // span the whole grid row (featured / odd-count tiles)
 }
-const { repo, tags, fallback, loading, viewRepo, media } = Astro.props;
-const name = repo.split("/")[1];
+const {
+  name,
+  repo,
+  link,
+  tags,
+  fallback,
+  highlights,
+  loading,
+  viewRepo,
+  visit,
+  enlarge,
+  media,
+  status,
+  fullWidth,
+} = Astro.props;
 const cardId = `card-${name.toLowerCase().replace(/[^a-z0-9]/g, "-")}`;
 // Treat .mp4/.webm as a looping muted video, everything else (.gif/.png) as an image.
 const isVideo = !!media && /\.(mp4|webm)$/i.test(media);
 ---
 
-<article class="card" id={cardId} data-repo={repo} data-fallback={fallback}>
+<article
+  class:list={["card", { full: fullWidth }]}
+  id={cardId}
+  data-repo={repo}
+  data-fallback={fallback}
+>
   {/*
-    PROJECT DEMO (video / GIF) — placeholder.
-    This renders automatically once you set a `media` path for this repo in
+    PROJECT DEMO (video / GIF).
+    Renders automatically once you set a `media` path for this project in
     src/data/content.ts (projectsBase) and drop the file in public/videos/.
-    Nothing shows while `media` is undefined, so the card stays clean until then.
+    The thumbnail is a button that opens the clip in a full-size lightbox
+    (handled in Projects.astro). Nothing shows while `media` is undefined.
   */}
   {media && (
-    <div class="media">
+    <button
+      class="media"
+      type="button"
+      data-lightbox-open
+      data-media={media}
+      data-media-type={isVideo ? "video" : "image"}
+      data-media-label={name}
+      aria-label={`${enlarge}: ${name}`}
+      title={enlarge}
+    >
       {isVideo ? (
-        <video src={media} autoplay loop muted playsinline preload="metadata"></video>
+        <video src={media} autoplay loop muted playsinline preload="metadata" />
       ) : (
         <img src={media} alt={`${name} demo`} loading="lazy" />
       )}
-    </div>
+      <span class="media-hint" aria-hidden="true">⤢</span>
+    </button>
   )}
 
-  <div class="card-head">
-    <h3>{name}</h3>
-    <span class="lang" data-field="language" hidden></span>
+  <div class="card-body">
+    <div class="card-head">
+      <h3>{name}</h3>
+      <span class="lang" data-field="language" hidden></span>
+    </div>
+
+    <p class="desc" data-field="description">{fallback}</p>
+
+    {highlights.length > 0 && (
+      <ul class="highlights">
+        {highlights.map((h) => (
+          <li>{h}</li>
+        ))}
+      </ul>
+    )}
+
+    <div class="tags">
+      {tags.map((t) => <span class="tag">{t}</span>)}
+    </div>
+
+    {/*
+      GitHub projects show live stats (hydrated in Projects.astro); off-GitHub
+      projects show a static status line instead, if one is provided.
+    */}
+    {repo ? (
+      <div class="stats mono" data-field="stats">
+        <span class="stat-loading">{loading}</span>
+      </div>
+    ) : status ? (
+      <div class="stats mono">
+        <span>{status}</span>
+      </div>
+    ) : null}
+
+    {repo ? (
+      <a
+        class="card-link"
+        href={`https://github.com/${repo}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {viewRepo}
+      </a>
+    ) : link ? (
+      <a class="card-link" href={link} target="_blank" rel="noreferrer">
+        {visit}
+      </a>
+    ) : null}
   </div>
-
-  <p class="desc" data-field="description">{fallback}</p>
-
-  <div class="tags">
-    {tags.map((t) => <span class="tag">{t}</span>)}
-  </div>
-
-  <div class="stats mono" data-field="stats">
-    <span class="stat-loading">{loading}</span>
-  </div>
-
-  <a class="card-link" href={`https://github.com/${repo}`} target="_blank" rel="noreferrer">
-    {viewRepo}
-  </a>
 </article>
 
 <style>
@@ -71,14 +138,56 @@ const isVideo = !!media && /\.(mp4|webm)$/i.test(media);
     box-shadow: var(--shadow-md);
   }
 
-  /* demo video / GIF thumbnail (only present when a project has `media`) */
+  /* Holds everything except the media thumbnail, so a full-width card can lay
+     the media and this column out side by side (see .card.full below). */
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Full-width / featured tile — spans the whole grid row. */
+  .card.full {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 701px) {
+    .card.full {
+      flex-direction: row;
+      align-items: stretch;
+      gap: 24px;
+    }
+
+    .card.full > .media {
+      flex: 1 1 56%;
+      margin: 0;
+      /* Let the thumbnail stretch to the content column's height rather than
+         being pinned to a 16/9 box. */
+      aspect-ratio: auto;
+      min-height: 280px;
+    }
+
+    .card.full > .card-body {
+      flex: 1 1 44%;
+      justify-content: center;
+    }
+  }
+
+  /* Demo video / GIF thumbnail — a button that opens the lightbox. */
   .media {
+    position: relative;
     margin: -4px 0 4px;
+    padding: 0;
+    width: 100%;
     border-radius: var(--radius-sm);
     overflow: hidden;
     border: 1px solid var(--border);
     background: var(--bg-alt);
     aspect-ratio: 16 / 9;
+    cursor: zoom-in;
+    display: block;
   }
 
   .media video,
@@ -87,6 +196,32 @@ const isVideo = !!media && /\.(mp4|webm)$/i.test(media);
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Zoom in a touch so the clip's baked-in edges (e.g. terminal padding)
+       are cropped away instead of showing as a border. */
+    transform: scale(1.06);
+  }
+
+  /* Little "expand" affordance in the corner of the thumbnail. */
+  .media-hint {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: rgba(10, 18, 32, 0.6);
+    color: #fff;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .media:hover .media-hint,
+  .media:focus-visible .media-hint {
+    opacity: 1;
   }
 
   .card-head {
@@ -118,9 +253,38 @@ const isVideo = !!media && /\.(mp4|webm)$/i.test(media);
     min-height: 44px;
   }
 
+  .highlights {
+    margin: 2px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .highlights li {
+    position: relative;
+    padding-left: 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .highlights li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
   .tags {
     display: flex;
     flex-wrap: wrap;
+    margin-top: 2px;
   }
 
   .stats {

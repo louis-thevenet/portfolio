@@ -25,36 +25,68 @@ export const profile = {
     linkedin: "https://www.linkedin.com/in/louis-thevenet-4113b5282",
 };
 
-// Repos rendered as project cards. Stats/description are fetched live from the
-// GitHub API in the browser; `fallback` (localized below) shows if that fails.
+// Projects rendered as cards. Two kinds:
 //
-// VIDEO / GIF PLACEHOLDER:
-// To show a demo clip on a card, drop the file in `public/videos/` (e.g.
-// `public/videos/vault-tasks.mp4` or `.gif`) and uncomment the matching
-// `media` line below. `.mp4`/`.webm` render as an autoplaying muted loop,
-// anything else (`.gif`, `.png`, ...) renders as an <img>. See ProjectCard.astro.
+//  1. GitHub projects — set `repo: "owner/name"`. Stats/description are fetched
+//     live from the GitHub API in the browser; `fallback` (localized below)
+//     shows if that fails, and the card links to the repo.
+//  2. Off-GitHub projects (e.g. closed-source work) — omit `repo` and set an
+//     explicit `name`. Nothing is fetched: the card shows the localized
+//     `fallback` copy plus a static `status` line (see projectStatus below),
+//     and has no repo link unless you add a `link`.
+//
+// `id` is the key used to look up localized copy (fallback / highlights /
+// status). For GitHub projects it's just the repo string; for off-GitHub ones
+// pick any stable slug. Set `fullWidth: true` to make a tile span the whole row
+// (handy for a featured project, or to even out an odd number of tiles).
+//
+// VIDEO / GIF: drop the file in `public/videos/` and point `media` at it.
+// `.mp4`/`.webm` render as an autoplaying muted loop, anything else
+// (`.gif`, `.png`, ...) renders as an <img>. See ProjectCard.astro.
 const projectsBase = [
     {
+        // Closed-source game, in development — no GitHub repo.
+        // TODO: drop the trailer/clip at public/videos/absent-light.mp4
+        // (or update this path), and tweak the tags to taste.
+        id: "absent-light",
+        name: "Absent Light",
+        tags: ["Game", "Roguelike", "Survival", "Procedural generation"],
+        media: "/videos/absent-light.mp4",
+        fullWidth: true,
+    },
+    {
+        id: "louis-thevenet/vault-tasks",
         repo: "louis-thevenet/vault-tasks",
         tags: ["Rust", "Ratatui", "CLI"],
         media: "/videos/vault-tasks.gif",
     },
     {
+        id: "louis-thevenet/map-generation",
         repo: "louis-thevenet/map-generation",
         tags: ["Rust", "Procedural generation", "TUI"],
         media: "/videos/map-generation.mp4",
     },
     {
+        id: "louis-thevenet/Solarust",
         repo: "louis-thevenet/Solarust",
         tags: ["Rust", "Bevy", "Simulation"],
         media: "/videos/solarust.mp4",
     },
     {
+        id: "louis-thevenet/RayTracerCsharp",
         repo: "louis-thevenet/RayTracerCsharp",
         tags: ["C#", ".NET", "Ray tracing"],
         media: "/videos/raytracer.mp4",
     },
-] as { repo: string; tags: string[]; media?: string }[];
+] as {
+    id: string;
+    repo?: string;
+    name?: string;
+    tags: string[];
+    media?: string;
+    fullWidth?: boolean;
+    link?: string;
+}[];
 
 const data = {
     en: {
@@ -154,6 +186,8 @@ const data = {
         },
 
         projectFallbacks: {
+            "absent-light":
+                "A survival roguelike set in a collapsed high-fantasy world. Scavenge, craft and endure in a deep, systemic simulation where the world reacts to you and every run is unforgiving.",
             "louis-thevenet/vault-tasks":
                 "A terminal task manager that reads and writes tasks straight from Markdown vaults — built for people who keep their second brain in plain text.",
             "louis-thevenet/map-generation": "Procedural map generation experiments.",
@@ -165,6 +199,11 @@ const data = {
         // A few hand-written highlights per project, shown as a short bulleted
         // list on each card (in addition to the GitHub description above).
         projectHighlights: {
+            "absent-light": [
+                "Open-ended survival across a procedurally generated fantasy world in ruin",
+                "Deep crafting and inventory systems — build, repair and improvise from whatever you scavenge",
+                "Emergent, systemic play where creatures, weather and magic collide in ways I don't script",
+            ],
             "louis-thevenet/vault-tasks": [
                 "Parses tasks from any Markdown file or vault: subtasks, tags, relative dates, priority and completion",
                 "Navigate, search, filter and edit tasks — or open them in your own editor",
@@ -185,6 +224,12 @@ const data = {
                 "Phong-style lighting with ambient, diffuse and specular components",
             ],
         } as Record<string, string[]>,
+
+        // Static status line shown (in place of live GitHub stats) for
+        // off-GitHub projects, keyed by project `id`.
+        projectStatus: {
+            "absent-light": "In development · since June 2026",
+        } as Record<string, string>,
 
         ui: {
             nav: {
@@ -213,6 +258,7 @@ const data = {
                 title: "Selected personal projects",
                 lead: "Open-source work, mostly in Rust and C#. Live data pulled from GitHub.",
                 viewRepo: "view repository ↗",
+                visit: "visit ↗",
                 enlarge: "Click to enlarge",
                 close: "Close",
                 loading: "fetching repo status…",
@@ -350,6 +396,8 @@ const data = {
         },
 
         projectFallbacks: {
+            "absent-light":
+                "Un roguelike de survie dans un monde d'heroic-fantasy effondré. Récupérez, fabriquez et survivez dans une simulation systémique où le monde réagit à vos actions et où chaque partie est impitoyable.",
             "louis-thevenet/vault-tasks":
                 "Un gestionnaire de tâches en terminal qui lit et écrit les tâches directement dans des vaults Markdown — pensé pour ceux qui gardent leur second cerveau en texte brut.",
             "louis-thevenet/map-generation":
@@ -361,6 +409,11 @@ const data = {
         } as Record<string, string>,
 
         projectHighlights: {
+            "absent-light": [
+                "Survie en monde ouvert dans un univers fantasy en ruine généré procéduralement",
+                "Systèmes d'artisanat et d'inventaire poussés — fabriquer, réparer et improviser avec ce que l'on récupère",
+                "Jeu émergent et systémique où créatures, météo et magie interagissent sans être scriptés",
+            ],
             "louis-thevenet/vault-tasks": [
                 "Analyse les tâches de n'importe quel fichier ou vault Markdown : sous-tâches, tags, dates relatives, priorité et progression",
                 "Naviguer, rechercher, filtrer et modifier les tâches — ou les ouvrir dans son propre éditeur",
@@ -381,6 +434,12 @@ const data = {
                 "Éclairage de type Phong avec composantes ambiante, diffuse et spéculaire",
             ],
         } as Record<string, string[]>,
+
+        // Ligne de statut affichée (à la place des stats GitHub en direct) pour
+        // les projets hors GitHub, indexée par `id` de projet.
+        projectStatus: {
+            "absent-light": "En développement · depuis juin 2026",
+        } as Record<string, string>,
 
         ui: {
             nav: {
@@ -409,6 +468,7 @@ const data = {
                 title: "Projets personnels sélectionnés",
                 lead: "Travaux open source, principalement en Rust et C#. Données en direct depuis GitHub.",
                 viewRepo: "voir le dépôt ↗",
+                visit: "visiter ↗",
                 enlarge: "Cliquer pour agrandir",
                 close: "Fermer",
                 loading: "récupération du statut du dépôt…",
@@ -466,8 +526,14 @@ export function getContent(lang: Locale) {
         skills: d.skills,
         projects: projectsBase.map((p) => ({
             ...p,
-            fallback: d.projectFallbacks[p.repo],
-            highlights: d.projectHighlights[p.repo] ?? [],
+            // GitHub projects derive their name from the repo; off-GitHub ones
+            // set `name` explicitly.
+            name: p.name ?? p.repo!.split("/")[1],
+            fallback: d.projectFallbacks[p.id],
+            highlights: d.projectHighlights[p.id] ?? [],
+            // Static status line for off-GitHub projects (undefined otherwise,
+            // in which case the card fetches live GitHub stats instead).
+            status: d.projectStatus[p.id],
         })),
         // Each project carries an optional `media` path (see projectsBase above) —
         // ProjectCard renders it as a looping video or an image when present.

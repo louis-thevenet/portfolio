@@ -23,15 +23,38 @@ const { projects, ui } = getContent(lang);
     >
       {projects.map((p) => (
         <ProjectCard
+          name={p.name}
           repo={p.repo}
+          link={p.link}
           tags={p.tags}
           fallback={p.fallback}
+          highlights={p.highlights}
           media={p.media}
+          status={p.status}
+          fullWidth={p.fullWidth}
           loading={ui.projects.loading}
           viewRepo={ui.projects.viewRepo}
+          visit={ui.projects.visit}
+          enlarge={ui.projects.enlarge}
         />
       ))}
     </div>
+  </div>
+
+  {/* Shared lightbox: any card's media button fills and opens this. */}
+  <div
+    class="lightbox"
+    id="project-lightbox"
+    data-close-label={ui.projects.close}
+    hidden
+  >
+    <button class="lightbox-close" type="button" aria-label={ui.projects.close}
+      >×</button
+    >
+    <figure class="lightbox-figure">
+      <div class="lightbox-media" data-media-slot></div>
+      <figcaption class="lightbox-caption" data-caption></figcaption>
+    </figure>
   </div>
 </section>
 
@@ -88,6 +111,72 @@ const { projects, ui } = getContent(lang);
   }
 
   hydrateCards();
+
+  // Lightbox: clicking a card's media thumbnail opens the clip at full size.
+  function initLightbox() {
+    const lightbox =
+      document.querySelector<HTMLElement>("#project-lightbox");
+    if (!lightbox) return;
+    const slot = lightbox.querySelector<HTMLElement>("[data-media-slot]");
+    const caption = lightbox.querySelector<HTMLElement>("[data-caption]");
+    const closeBtn =
+      lightbox.querySelector<HTMLButtonElement>(".lightbox-close");
+    if (!slot || !caption) return;
+
+    function open(src: string, type: string, label: string) {
+      slot!.replaceChildren();
+      let el: HTMLElement;
+      if (type === "video") {
+        const v = document.createElement("video");
+        v.src = src;
+        v.autoplay = true;
+        v.loop = true;
+        v.muted = true;
+        v.controls = true;
+        v.playsInline = true;
+        el = v;
+      } else {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = `${label} demo`;
+        el = img;
+      }
+      slot!.appendChild(el);
+      caption!.textContent = label;
+      lightbox!.hidden = false;
+      document.body.style.overflow = "hidden";
+      closeBtn?.focus();
+    }
+
+    function close() {
+      lightbox!.hidden = true;
+      slot!.replaceChildren(); // stop any playing video
+      document.body.style.overflow = "";
+    }
+
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-lightbox-open]")
+      .forEach((btn) => {
+        btn.addEventListener("click", () =>
+          open(
+            btn.dataset.media ?? "",
+            btn.dataset.mediaType ?? "image",
+            btn.dataset.mediaLabel ?? "",
+          ),
+        );
+      });
+
+    closeBtn?.addEventListener("click", close);
+    // Click on the backdrop (outside the figure) closes.
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !lightbox.hidden) close();
+    });
+  }
+
+  initLightbox();
 </script>
 
 <style>
@@ -101,5 +190,77 @@ const { projects, ui } = getContent(lang);
     .grid {
       grid-template-columns: 1fr;
     }
+  }
+
+  /* -- lightbox -- */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(16px, 5vw, 48px);
+    background: rgba(8, 14, 24, 0.78);
+    backdrop-filter: blur(3px);
+  }
+
+  .lightbox[hidden] {
+    display: none;
+  }
+
+  .lightbox-figure {
+    margin: 0;
+    max-width: min(1100px, 100%);
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .lightbox-media {
+    display: flex;
+    min-height: 0;
+  }
+
+  .lightbox-media :global(video),
+  .lightbox-media :global(img) {
+    display: block;
+    max-width: 100%;
+    max-height: 82vh;
+    height: auto;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+  }
+
+  .lightbox-caption {
+    margin: 0;
+    color: #e6ecf5;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.24);
   }
 </style>
