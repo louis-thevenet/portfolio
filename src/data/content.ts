@@ -117,7 +117,7 @@ const data = {
         tagline:
             "Engineering student finishing at ENSEEIHT, looking for a full-time role from September 2026.",
         heroSecondary:
-            "Currently a software engineering intern at Thales, building a drone-swarm simulator on Unreal Engine 5, and a maintainer in the Nixpkgs open-source project.",
+            "Currently a software engineering intern at Thales, where I'm building a drone-swarm simulator on Unreal Engine 5.\nI'm also active in the open-source community, working on personal and community projects.",
         availability: "Available for full-time · Sept. 2026",
 
         experience: [
@@ -128,21 +128,29 @@ const data = {
                 period: "Feb 2026 — Aug 2026",
                 stack: ["Unreal Engine 5", "C++", "CUDA"],
                 points: [
-                    "Built the simulator on Unreal Engine 5 in C++",
-                    "Simulated onboard cameras with GPU-side encoding and stream output",
-                    "Integrated multiple physics engines (Gazebo, JSBSim) and flight stacks (PX4, SwarmMaster)",
-                    "Distributed simulation load across several machines",
+                    "Built the simulator on Unreal Engine 5 in C++ within the Drone Swarm team",
+                    "Simulated onboard cameras with GPU-side encoding and live stream output",
+                    "Physics-engine-agnostic simulator, able to simulate all kinds of vehicles",
+                    "Photorealistic 3D environment",
+                    "Integrated multiple physics engines (Gazebo for SwarmMaster, JSBSim for Toutatis) with synchronized terrain and collisions",
+                    "Distributed the stream-rendering load across several machines",
                 ],
             },
             {
-                title: "Software Engineer Intern — Nix in the SlapOS Stack",
+                title: "Software Engineer Intern — NixOS/Slapos Fusion",
                 org: "Nexedi",
                 location: "Lille, France",
                 period: "Jun 2025 — Aug 2025",
-                stack: ["Nix", "NixOS", "Buildout", "SlapOS", "Python"],
+                stack: ["Nix", "NixOS", "Buildout", "SlapOS", "Python", "glibc"],
                 points: [
                     "Integrated the Nix package manager into the SlapOS deployment system, replacing Ansible to strengthen reproducibility",
                     "Adapted the SlapOS software stack for full NixOS compatibility",
+                    "Wrote articles showing that Nix and Docker don't produce truly portable binaries, since glibc is frozen into the image/store and diverges from the host system's",
+                    "Patched nixpkgs to support older glibc/kernel versions, as a path toward restoring true portability for Nix binaries",
+                ],
+                links: [
+                    { label: "Glibc Incompatibility in Nix Builds", url: "https://blog.rapid.space/rapidspace-Blog/rapidspace-Glibc.Incompatibility.In.Nix.Builds" },
+                    { label: "Glibc Incompatibility With Docker", url: "https://blog.rapid.space/rapidspace-Blog/rapidspace-Glibc.Incompatibility.With.Docker" },
                 ],
             },
             {
@@ -152,7 +160,8 @@ const data = {
                 period: "Summer 2024",
                 stack: [],
                 points: [
-                    "Resolved technical and logistical issues, guided candidates to their exam rooms, and managed equipment",
+                    "Managed the IT equipment used by examiners and candidates during the oral exams",
+                    "Provided technical and logistical support, guided candidates to their exam rooms, and managed equipment",
                 ],
             },
         ] satisfies ExperienceItem[],
@@ -185,15 +194,14 @@ const data = {
                 ],
             },
             {
-                title: "Classe préparatoire (MPI / MP2I)",
+                title: "Classe préparatoire (MPI* / MP2I)",
                 org: "Lycée Paul Valéry",
                 location: "Paris, France",
                 period: "Sept 2021 — Jul 2023",
                 detail: [
-                    "Intensive math",
+                    "Mathematics",
                     "Physics",
                     "Computer science",
-                    "Preparation for the Grandes Écoles entrance exams",
                 ],
             },
         ] satisfies EducationItem[],
@@ -201,64 +209,77 @@ const data = {
         contributions: [
             {
                 repo: "NixOS/nixpkgs",
-                role: "Maintainer",
                 period: "2024 — present",
                 description:
-                    "Member of the Nixpkgs maintainers team: maintaining several packages and reviewing incoming code.",
+                    "Member of the Nixpkgs maintainers team: maintaining several packages.",
             },
             {
-                repo: "danth/stylix",
-                role: "Contributor",
-                period: "ongoing",
+                repo: "nix-community/stylix",
+                period: "2025 — present",
                 description:
-                    "Contributing to Stylix, the system-wide theming framework for NixOS.",
+                    "Also a member of the team maintaining Stylix modules, the system-wide theming framework for NixOS.",
+            },
+            {
+                repo: "alexpasmantier/television",
+                description:
+                    "Contributing to Television, a highly versatile fuzzy finder, to improve how it works with Nix.",
+            },
+            {
+                repo: "ratatui/tui-widgets",
+                description:
+                    "Fixed bugs in TUI Widgets, a widget library for building TUIs (Text-based User Interfaces).",
+            },
+            {
+                repo: "helix-editor/helix",
+                description:
+                    "Added parameters to some of the editor's commands.",
             },
         ],
 
         skills: {
             languages: ["Rust", "C++", "Java", "Python", "C#"],
-            tools: ["Unreal Engine", "MATLAB", "Git", "SQL", "Linux", "Nix / NixOS"],
+            tools: ["Git", "Linux", "Nix / NixOS", "Unreal Engine", "MATLAB", "SQL", "CUDA"],
             spoken: ["French — native", "English — C2"],
             interests: ["Open source", "Climbing & hiking", "Reading"],
         },
 
         projectDescriptions: {
             "absent-light":
-                "A survival roguelike set in a collapsed high-fantasy world. Scavenge, craft and endure in a deep, systemic simulation where the world reacts to you and every run is unforgiving.",
+                "Absent Light is a turn-based survival game set in a fantasy world. Fight to survive in a harsh, persistent, procedurally generated world where every run is unique and the world reacts to your actions. The game is in early development and not yet publicly available.",
             "louis-thevenet/vault-tasks":
-                "A terminal task manager that reads and writes tasks straight from Markdown vaults — built for people who keep their second brain in plain text.",
-            "louis-thevenet/map-generation": "Procedural map generation experiments.",
-            "louis-thevenet/Solarust": "A solar system simulation written in Rust.",
+                "A terminal task manager that reads and writes tasks straight from Markdown files. Built to integrate seamlessly with note-taking and \"second brain\" software.",
+            "louis-thevenet/map-generation": "Procedural terrain and city generation experiments.",
+            "louis-thevenet/Solarust": "A simulation of gravitational interactions between celestial bodies, built in Rust.",
             "louis-thevenet/RayTracerCsharp":
-                "A ray-tracing render engine for displaying 3D objects, built to experiment with lighting effects.",
+                "A ray-tracing render engine for displaying 3D objects and scenes.",
         } as Record<string, string>,
 
         // A few hand-written highlights per project, shown as a short bulleted
         // list on each card (in addition to the GitHub description above).
         projectHighlights: {
             "absent-light": [
-                "Open-ended survival across a procedurally generated fantasy world in ruin",
+                "Open-world survival across a procedurally generated fantasy world",
                 "Deep crafting and inventory systems — build, repair and improvise from whatever you scavenge",
-                "Emergent, systemic play where creatures, weather and magic collide in ways I don't script",
+                "Emergent, systemic play where creatures, environment and magic collide without being scripted",
+                "Simple interface designed to make it easy to add content and deepen the simulation",
             ],
             "louis-thevenet/vault-tasks": [
-                "Parses tasks from any Markdown file or vault: subtasks, tags, relative dates, priority and completion",
-                "Navigate, search, filter and edit tasks — or open them in your own editor",
-                "Calendar view and a time-management tab (Pomodoro & Flowtime)",
+                "Extends Markdown with a task syntax carrying metadata (subtasks, tags, relative dates, priority and completion)",
+                "All data lives inside the tasks themselves, for maximum portability",
+                "Terminal interface to navigate, search, filter and edit tasks",
             ],
             "louis-thevenet/map-generation": [
                 "Procedural biome generation driven by temperature, moisture, continentalness and erosion maps",
                 "Explore an endless world in a TUI, with chunks generated as you move",
-                "Part of a larger experiment: LLM-driven NPCs living in a procedural world",
+                "The foundation of my procedural-generation work for a more ambitious project: Absent Light",
             ],
             "louis-thevenet/Solarust": [
                 "Solar-system simulation built with the Bevy game engine in Rust",
-                "A toy project to dig into Bevy's ECS architecture and real-time rendering",
+                "A learning project to dig into Bevy's ECS architecture and real-time rendering",
             ],
             "louis-thevenet/RayTracerCsharp": [
-                "CPU ray tracer written from scratch in C#",
-                "Loads 3D meshes from ASCII STL files and renders them with configurable lights and materials",
-                "Phong-style lighting with ambient, diffuse and specular components",
+                "Engine written from scratch in C#",
+                "Loads 3D models from ASCII STL files and renders them with configurable lights and materials",
             ],
         } as Record<string, string[]>,
 
@@ -293,7 +314,7 @@ const data = {
             projects: {
                 eyebrow: "Projects",
                 title: "Selected personal projects",
-                lead: "Open-source work, mostly in Rust and C#. Live data pulled from GitHub.",
+                lead: "Mostly open-source work related to software development, simulation and emergent systems, primarily in Rust.",
                 viewRepo: "view repository ↗",
                 visit: "visit ↗",
                 enlarge: "Click to enlarge",
@@ -306,7 +327,7 @@ const data = {
             oss: {
                 eyebrow: "Open source",
                 title: "Open-source contributions",
-                lead: "Ongoing upstream work in the NixOS ecosystem.",
+                lead: "Occasional contributions and ongoing work in the NixOS ecosystem.",
             },
             education: {
                 eyebrow: "Education",
@@ -331,7 +352,7 @@ const data = {
                 location: "Location",
                 emailMe: "Email me",
             },
-            footer: { builtWith: "Built with Astro" },
+            footer: {},
         },
     },
 
@@ -361,7 +382,7 @@ const data = {
                 ],
             },
             {
-                title: "Stagiaire ingénieur logiciel - Nix dans la stack SlapOS",
+                title: "Stagiaire ingénieur logiciel - Fusion de NixOS et SlapOS",
                 org: "Nexedi",
                 location: "Lille, France",
                 period: "juin 2025 — août 2025",
@@ -453,7 +474,11 @@ const data = {
                 description:
                     "Correction de bugs dans TUI Widgets, une bibliothèque de widgets pour créer des interfaces TUI (Text-based User Interfaces).",
             },
-
+            {
+                repo: "helix-editor/helix",
+                description:
+                    "Ajout de paramètres à certaines commandes de l'éditeur.",
+            }
         ],
 
         skills: {
@@ -485,12 +510,12 @@ const data = {
             ],
             "louis-thevenet/vault-tasks": [
                 "Extension du langage Markdown avec une syntaxe de tâches avec méta-données (sous-tâches, tags, dates relatives, priorité et progression)",
-                "Toutes les données sont stockées dans les tâches, pour une portabilité maximale et une intégration avec n'importe quel logiciel de prise de notes",
+                "Toutes les données sont stockées dans les tâches, pour une portabilité maximale",
                 "Interface en terminal pour naviguer, rechercher, filtrer et modifier les tâches",
             ],
             "louis-thevenet/map-generation": [
                 "Génération procédurale de biomes pilotée par des cartes de température, d'humidité, de continentalité et d'érosion",
-                "Explorer un monde infini avec des chunks générés au fil des déplacements",
+                "Monde infini avec des chunks générés au fil des déplacements",
                 "Base de mes travaux de génération procédurale pour un projet plus ambitieux : Absent Light",
             ],
             "louis-thevenet/Solarust": [
@@ -499,7 +524,7 @@ const data = {
             ],
             "louis-thevenet/RayTracerCsharp": [
                 "Moteur écrit de 0 en C#",
-                "Charge des modèles 3D depuis des fichiers STL ASCII et en fait le rendu avec lumières et matériaux configurables",
+                "Charge des modèles 3D depuis des fichiers STL et en fait le rendu avec lumières et matériaux configurables",
             ],
         } as Record<string, string[]>,
 
@@ -534,7 +559,7 @@ const data = {
             projects: {
                 eyebrow: "Projets",
                 title: "Projets personnels sélectionnés",
-                lead: "Travaux open source, principalement en Rust et C#. Données en direct depuis GitHub.",
+                lead: "Travaux majoritairement open source et liés au développement logiciel, la simulation et les systèmes émergents, principalement en Rust",
                 viewRepo: "voir le dépôt ↗",
                 visit: "visiter ↗",
                 enlarge: "Cliquer pour agrandir",
@@ -547,7 +572,7 @@ const data = {
             oss: {
                 eyebrow: "Open source",
                 title: "Contributions open source",
-                lead: "Travail continu en amont dans l'écosystème NixOS.",
+                lead: "Contributions ponctuelles et travail en continu dans l'écosystème NixOS.",
             },
             education: {
                 eyebrow: "Formation",
